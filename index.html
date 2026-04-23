@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>❤️</title>
+    <style>
+        :root {
+            --primary-pink: #ff4d6d;
+            --bg-pink: #ffeef2;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: var(--bg-pink);
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        #container {
+            position: relative;
+            z-index: 20; /* عشان يكون فوق القلوب */
+            padding: 20px;
+        }
+
+        h1 {
+            color: #d63384;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+
+        .gif-container {
+            width: 230px;
+            height: 230px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gif-container img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .buttons {
+            display: flex;
+            flex-direction: row; /* عشان يكونوا جنب بعض */
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap; /* عشان لو زرار كبر ينزل في سطر جديد وميبوظش الشاشة */
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 30;
+        }
+
+        #yesBtn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        #noBtn {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        /* ستايل القلوب */
+        .heart {
+            position: fixed;
+            bottom: -10%;
+            font-size: 24px;
+            user-select: none;
+            pointer-events: none; /* مهم جداً عشان ميتداخلش مع الضغط على الزراير */
+            animation: floatUp 4s linear forwards;
+            z-index: 1;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="container">
+        <div class="gif-container">
+            <img id="mainGif" src="start.gif" alt="Surprise">
+        </div>
+        
+        <h1 id="question">بتحبيني؟ 🥺</h1>
+
+        <div class="buttons" id="btnWrapper">
+            <button id="yesBtn" onclick="celebrate()">أيوة طبعاً! ❤️</button>
+            <button id="noBtn" onclick="handleNo()">لأ</button>
+        </div>
+    </div>
+
+    <script>
+        let noClickCount = 0;
+        const noTexts = [
+            "أنتي متأكدة؟ 🤨",
+            "فكري كمان مرة.. 🙄",
+            "إجابة أخيرة؟ 🥺",
+            "بجد لأ برضه؟ 💔",
+            "يا بنتي قولي أيوة بقى 😂",
+            "خلاص مفيش غير أيوة!"
+        ];
+
+        function handleNo() {
+            const noBtn = document.getElementById('noBtn');
+            const yesBtn = document.getElementById('yesBtn');
+            const mainGif = document.getElementById('mainGif');
+
+            if (noClickCount < noTexts.length) {
+                // 1. تغيير النص واللون للأحمر
+                noBtn.innerHTML = noTexts[noClickCount];
+                noBtn.style.backgroundColor = "#dc3545"; 
+
+                // 2. تكبير زرار أيوة (باستخدام الفونت والبادينج عشان يفضل جنب التاني)
+                let currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+                yesBtn.style.fontSize = (currentSize + 10) + "px";
+                
+                let currentPaddingTop = parseFloat(window.getComputedStyle(yesBtn).paddingTop);
+                let currentPaddingSide = parseFloat(window.getComputedStyle(yesBtn).paddingLeft);
+                yesBtn.style.padding = (currentPaddingTop + 5) + "px " + (currentPaddingSide + 10) + "px";
+                
+                // 3. تغيير الصورة للحزينة
+                mainGif.src = "sad.gif";
+
+                noClickCount++;
+            } else {
+                noBtn.style.display = 'none';
+                document.getElementById('question').innerHTML = "😍";
+            }
+        }
+
+        function celebrate() {
+            const h1 = document.getElementById('question');
+            const gif = document.getElementById('mainGif');
+            const btnWrapper = document.getElementById('btnWrapper');
+            h1.innerHTML = "وأنا كمان بحبك أوي ❤️🌹";
+            gif.src = "happy.gif"; // الصورة السعيدة اللي عندك
+            
+            btnWrapper.style.display = 'none';
+
+            // نافورة القلوب
+            setInterval(createHeart, 150);
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            const icons = ['❤️', '💖', '💗', '💕', '🌹'];
+            heart.innerText = icons[Math.floor(Math.random() * icons.length)];
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.fontSize = Math.random() * 20 + 20 + "px";
+            heart.style.animationDuration = Math.random() * 2 + 3 + "s";
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 4000);
+        }
+    </script>
+</body>
+</html>
